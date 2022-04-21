@@ -17,6 +17,7 @@ export class GameView {
     animate() {
         // draw stuff
         // console.log("spam");
+        this.game.step(this.ctx);
         requestAnimationFrame(this.animate.bind(this));
     }
 }
