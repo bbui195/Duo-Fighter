@@ -18,6 +18,11 @@ In addition, this project will include:
 
 ## Wireframes
 
+![wireframe](/src/assets/wireframe.png "Wireframe")
+
+* Nav links include links to this project's Github repo and my LinkedIn
+
+* Instructions and rules will list all of the keys and have rules for the game.
 
 ## Technologies, Libraries, and APIs
 
@@ -29,8 +34,8 @@ This project will be implemented with the following technologies:
 ## Implementation Timeline
 
 * **Thursday:** Setup project and get webpack working. Experiment with canvas api to render sprite sheets.
-* **Friday Afternoon & Weekend:** Create `Game, ` `GameView, ` `Character, ` `Player, ` `Map, ` and `Obstacle` classes. Have a map render with a character able to walk around and jump on obstacles and platforms.
+* **Friday Afternoon & Weekend:** Create `Game`, `GameView`, `Character`, `Player`, `Map`, and `Obstacle` classes. Have a map render with a character able to walk around and jump on obstacles and platforms.
 * **Monday:** Implement attacking logic and hit boxes for attacks. Make animation priorities to ensure action animations have precedence over idle and walking animations.
 * **Tuesday:** Create a start screen that allows picking between 2 players or 1 player vs ai. Create basic ai to control another character. Allow multiple characters to be played on the same keyboard.
-* **Wednesday:** Style the page to include instructions on how to play the game, add a nav bar with link to github
+* **Wednesday:** Style the page to include instructions on how to play the game, add a nav bar with link to github.
 * **Thursday:** Deploy to GitHub pages and rewrite this proposal as a production README.
