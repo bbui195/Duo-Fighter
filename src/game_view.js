@@ -4,6 +4,7 @@ export class GameView {
     constructor(game, context) {
         this.ctx = context;
         this.game = game;
+        this.bindKeyHandlers();
     }
     start() {
         this.bindKeyHandlers();
@@ -12,7 +13,8 @@ export class GameView {
         requestAnimationFrame(this.animate.bind(this));
     }
     bindKeyHandlers() {
-
+        document.addEventListener("keydown", this.game.handleKey.bind(this.game));
+        document.addEventListener("keyup", this.game.handleKey.bind(this.game));
     }
     animate() {
         // draw stuff
