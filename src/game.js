@@ -1,4 +1,6 @@
 import { Character } from "./character";
+import { Player } from "./player";
+import { Map } from "./map";
 
 const keyHandlers = {
     w: function(type) {
@@ -16,11 +18,15 @@ const keyHandlers = {
 };
 export class Game {
     constructor() {
-        this.character = new Character();
+        this.character = new Character("adventurer", this);
+        this.player = new Player(this.character);
+        this.map = new Map();
+
     }
 
     draw(context) {
         context.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
+        this.map.draw(context);
         this.character.animate(context);
     }
 
@@ -30,7 +36,7 @@ export class Game {
         if(keyHandlers[e.key]) {
             // keyHandlers[e.key].call(this.character, e.type);
         }
-        this.character.handleKey(e.key, e.type);
+        this.player.handleKey(e.key, e.type);
     }
 
     step(context) {

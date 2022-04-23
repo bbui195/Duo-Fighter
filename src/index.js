@@ -8,3 +8,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const game = new Game();
     new GameView(game, context).start();
 });
+
+
+// smoke https://nyknck.itch.io/pixelfx052
+// adventurer https://rvros.itch.io/animated-pixel-hero?download
+// tiles https://sanctumpixel.itch.io/forest-lite-pixel-art-tileset
