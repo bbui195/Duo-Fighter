@@ -9,9 +9,9 @@ const CharacterMap = {
             scale: 2
         },
         hitBox: {
-            x: 20,
+            x: 13,//20
             y: 29,
-            offsetX: 15,
+            offsetX: 17.5,//15
             offsetY: 5
         },
         actions: {

@@ -1,9 +1,10 @@
 const CharacterMap = require("./character_map.js");
 export class Character {
-    constructor(charName, game, map) {
+    constructor(charName, game, map, context) {
         this.char = CharacterMap[charName];
         this.game = game;
         this.map = map;
+        this.context = context;
         // console.log(this.char);
         // this.image.src = "./src/assets/adventurer.png";
         this.image = new Image();
@@ -110,13 +111,14 @@ export class Character {
 
     standing() {
         // edit to find platform underneath
-        if(this.pos.y >= 500) {
-            this.removeAction("fall");
-            return true;
-        } else {
+        if(this.velocity.y >= 0 && this.move([0, 1])) {
+            this.move([0, -1]);
             this.addAction("fall", true);
             this.doubleJumped = false;
             return false;
+        } else {
+            this.removeAction("fall");
+            return true;
         }
     }
 
@@ -159,6 +161,16 @@ export class Character {
         }
     }
 
+    getBoundPoints() {
+        let bound = this.getBoundingRectangle();
+        return {
+            xLeft: bound.x - 1,
+            xRight: bound.x + bound.width + 1,
+            yLeft: bound.y,
+            yRight: bound.y + bound.height
+        };
+    }
+
     showHitBox(context) {
         context.globalAlpha = 0.7;
         let bound = this.getBoundingRectangle();
@@ -166,50 +178,51 @@ export class Character {
         context.globalAlpha = 1;
     }
 
-    intersecting(context) {
-        let squares = [];
+    calcBounds() {
         let bound = this.getBoundingRectangle();
-        let boundPoints = {
-            xLeft: bound.x - 1,
-            xRight: bound.x + bound.width + 1,
-            yLeft: bound.y,
-            yRight: bound.y + bound.height
-        };
-        let left = Math.floor(bound.x / 30) - 1;
-        // console.log(left);
-        let right = Math.floor((bound.x + bound.width) / 30) + 1;
-        let bottom = Math.floor(bound.y / 30) + 2;
-        // console.log(bottom);
-        //bottom, 2 or 3
-        // console.log(this);
+        return [
+            bound, //bounds
+            Math.floor(bound.x / 30) - 1, //left
+            Math.floor((bound.x + bound.width) / 30) + 1, //right
+            Math.floor(bound.y / 30) + 2 //bottom
+        ];
+    }
+
+    getFloor() {
+        let squares = [];
+        let [bound, left, right, bottom] = this.calcBounds();
         for(let i = left + 1; i < right; i++) {
-            if(this.map.objects[bottom][i]) {
+            if(this.map.objects[bottom] && this.map.objects[bottom][i]) {
                 squares.push([i, bottom]);
             }
         }
-        let points = [
-            // [left, bottom - 1],
-            // [left, bottom - 2],
-            // [right, bottom - 1],
-            // [right, bottom - 2]
-        ];
-        // console.log(this.map.objects);
-        //left
+        return squares;
+    }
+
+    getSides() {
+        let squares = [];
+        let [bound, left, right, bottom] = this.calcBounds();
+        let points = [];
         if(this.inputs.left) {
             points.push([left, bottom - 1]);
-            points.push([left, bottom - 2]);
+            // points.push([left, bottom - 2]);
         }
         //right
         if(this.inputs.right) {
             points.push([right, bottom - 1]);
-            points.push([right, bottom - 2]);
+            // points.push([right, bottom - 2]);
         }
         points.forEach(([i, j]) => {
-            if(this.map.objects[j][i]) {
+            if(this.map.objects[j] && this.map.objects[j][i]) {
                 squares.push([i, j]);
             }
         });
+        return squares;
+    }
+
+    collides(squares) {
         let int = false;
+        let boundPoints = this.getBoundPoints();
         squares.forEach(([col, row]) => {
             this.context.fillRect(col * 30, row * 30, 30, 30); //remove later
             let square = {
@@ -218,18 +231,23 @@ export class Character {
                 yLeft: row * 30,
                 yRight: row * 30 + 30
             };
-            // if((boundPoints.xLeft >= square.xLeft && boundPoints.xLeft <= square.xRight ||
-            //     boundPoints.xRight >= square.xLeft && boundPoints.xRight <= square.xRight) &&
-            //     (boundPoints.yLeft >= square.yLeft && boundPoints.yLeft <= square.yRight ||
-            //     boundPoints.yRight >= square.yLeft && boundPoints.yRight <= square.yRight)) {
-            if((square.xLeft >= boundPoints.xLeft && square.xLeft <= boundPoints.xRight ||
+            if(((square.xLeft >= boundPoints.xLeft && square.xLeft <= boundPoints.xRight ||
                 square.xRight >= boundPoints.xLeft && square.xRight <= boundPoints.xRight) &&
                 (square.yLeft >= boundPoints.yLeft && square.yLeft <= boundPoints.yRight ||
-                square.yRight >= boundPoints.yLeft && square.yRight <= boundPoints.yRight)) {
+                square.yRight >= boundPoints.yLeft && square.yRight <= boundPoints.yRight)) ||
+
+                ((boundPoints.xLeft >= square.xLeft && boundPoints.xLeft <= square.xRight ||
+                boundPoints.xRight >= square.xLeft && boundPoints.xRight <= square.xRight) &&
+                (boundPoints.yLeft >= square.yLeft && boundPoints.yLeft <= square.yRight ||
+                boundPoints.yRight >= square.yLeft && boundPoints.yRight <= square.yRight))) {
                 int = true;
             }
         });
         return int;
+    }
+
+    intersecting() {
+        return this.collides(this.getFloor().concat(this.getSides()));
     }
 
     move(pos) {
@@ -250,6 +268,7 @@ export class Character {
             x -= dir;
         }
         dir = y < 0 ? -1 : 1;
+        let down = true;
         while(y) {
             // if(y < 1 && y > -1) {
             //     dir = y;
@@ -258,10 +277,12 @@ export class Character {
             if(this.intersecting()) {
                 this.velocity.y = 0;
                 this.pos.y -= dir;
+                down = false;
                 break;
             }
             y -= dir;
         }
+        return down;
     }
 
     renderFrame(context) {
@@ -274,7 +295,7 @@ export class Character {
             this.char.size.y * scale);
 
         this.showHitBox(context);
-        this.intersecting(context);
+        this.intersecting();
         // this.frame = (this.frame + 0.2) % 109;
         // this.frame = (this.frame + .2) % 13;
     }
@@ -295,7 +316,7 @@ export class Character {
         // this.frame = (this.frame + .2) % 13;
         context.restore();
         this.showHitBox(context);
-        this.intersecting(context);
+        this.intersecting();
     }
 
     getDims(frame) {

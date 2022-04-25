@@ -17,9 +17,9 @@ const keyHandlers = {
     },
 };
 export class Game {
-    constructor() {
+    constructor(context) {
         this.map = new Map();
-        this.character = new Character("adventurer", this, this.map);
+        this.character = new Character("adventurer", this, this.map, context);
         this.player = new Player(this.character);
     }
 

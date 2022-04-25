@@ -5,7 +5,7 @@ const { GameView } = require("./game_view");
 document.addEventListener("DOMContentLoaded", function() {
     const canvas = document.getElementsByTagName("canvas")[0];
     const context = canvas.getContext("2d");
-    const game = new Game();
+    const game = new Game(context);
     new GameView(game, context).start();
 });
 
