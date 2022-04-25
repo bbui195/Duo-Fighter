@@ -1,3 +1,5 @@
+import { intersects } from "./util.js";
+
 const CharacterMap = require("./character_map.js");
 export class Character {
     constructor(charName, game, map, context) {
@@ -5,14 +7,14 @@ export class Character {
         this.game = game;
         this.map = map;
         this.context = context;
-        // console.log(this.char);
-        // this.image.src = "./src/assets/adventurer.png";
+
         this.image = new Image();
         this.image.src = this.char.image;
         this.frame = 0;
         this.frameCount = 0;
         this.disabled = false;
-        this.doubleJumped = false;
+        this.jumps = 2;
+        this.attackDebounce = 0;
         this.pos = {
             x: 0,
             y: 500,
@@ -84,20 +86,17 @@ export class Character {
         if(this.inputs.left && this.inputs.right){
             this.removeAction("run");
         } else if(this.inputs.left) {
-            // this.pos.x -= 4; // speed
-            this.move([-4, 0]);
+            this.move([-4, 0]); //speed
             this.facingRight = false;
             this.addAction("run", true);
         } else if(this.inputs.right) {
-            // this.pos.x += 4; // speed
-            this.move([4, 0]);
+            this.move([4, 0]); //speed
             this.facingRight = true;
             this.addAction("run", true);
         } else {
             this.removeAction("run");
         }
         if(!this.standing() || this.velocity.y < 0) {
-            // this.pos.y += 1;
             this.velocity.y += 0.5; //gravity
             if(this.velocity.y < 0) {
                 this.pos.y += this.velocity.y;
@@ -106,6 +105,7 @@ export class Character {
             }
         } else {
             this.velocity.y = 0;
+            this.jumps = 2;
         }
     }
 
@@ -114,7 +114,6 @@ export class Character {
         if(this.velocity.y >= 0 && this.move([0, 1])) {
             this.move([0, -1]);
             this.addAction("fall", true);
-            this.doubleJumped = false;
             return false;
         } else {
             this.removeAction("fall");
@@ -123,16 +122,66 @@ export class Character {
     }
 
     fall() {
-        // change to go 1 pixel at a time, this.velocity.y times
-        // this.pos.y += this.velocity.y;
         this.move([0, this.velocity.y]);
     }
 
     jump() {
-        this.addAction("jump");
-        // console.log(this.pos);
-        // this.pos.y = 450;
+        // console.log(this.jumps);
+        if(this.jumps === 0) {
+            return;
+        }
+        if(this.jumps === 2) {
+            this.addAction("jump");
+        } else {
+            this.addAction("airJump");
+        }
         this.velocity.y = -10;
+        this.jumps -= 1;
+    }
+
+    hit() {
+        this.velocity.y = -5;
+        // this.jump();
+    }
+
+    attack() {
+        this.action ||= 0;
+        // this.addAction("attack" + (Math.floor(Math.random() * 3) + 1));
+        // this.addAction("attack3");
+        if(this.action === 0 && this.attackDebounce > 0) {
+            return;
+        }
+        let attack = "attack" + (this.action + 1);
+        this.addAction(attack);
+        this.action = (this.action + 1) % 3;
+        this.attackDebounce += 1;
+        setTimeout(() => {
+            this.attackDebounce -= 1;
+            if(this.attackDebounce === 0) {
+                this.action = 0;
+            }
+            // console.log(this.attackDebounce);
+        }, 1000);
+        let charRect = this.getBoundingRectangle();
+        let attackHitbox = this.char.actions[attack].hitbox;
+        let hit = null
+        if(this.facingRight) {
+            hit = {
+                xLeft: charRect.x + attackHitbox.xLeft,
+                xRight: charRect.x + attackHitbox.xRight,
+                yLeft: charRect.y + attackHitbox.yLeft,
+                yRight: charRect.y + attackHitbox.yRight
+            };
+        } else {
+            hit = {
+                xLeft: charRect.x + charRect.width - attackHitbox.xRight,
+                xRight: charRect.x + charRect.width - attackHitbox.xLeft,
+                yLeft: charRect.y + attackHitbox.yLeft,
+                yRight: charRect.y + attackHitbox.yRight
+            };
+        }
+        // console.log(hit);
+        this.game.attack(this, hit);
     }
 
     removeAction(actionName) {
@@ -224,22 +273,16 @@ export class Character {
         let int = false;
         let boundPoints = this.getBoundPoints();
         squares.forEach(([col, row]) => {
-            this.context.fillRect(col * 30, row * 30, 30, 30); //remove later
+            // this.context.fillRect(col * 30, row * 30, 30, 30); //remove later
             let square = {
                 xLeft: col * 30,
                 xRight: col * 30 + 30,
                 yLeft: row * 30,
-                yRight: row * 30 + 30
+                // yRight: row * 30 + 30
+                yRight: row * 30 + 2
             };
-            if(((square.xLeft >= boundPoints.xLeft && square.xLeft <= boundPoints.xRight ||
-                square.xRight >= boundPoints.xLeft && square.xRight <= boundPoints.xRight) &&
-                (square.yLeft >= boundPoints.yLeft && square.yLeft <= boundPoints.yRight ||
-                square.yRight >= boundPoints.yLeft && square.yRight <= boundPoints.yRight)) ||
 
-                ((boundPoints.xLeft >= square.xLeft && boundPoints.xLeft <= square.xRight ||
-                boundPoints.xRight >= square.xLeft && boundPoints.xRight <= square.xRight) &&
-                (boundPoints.yLeft >= square.yLeft && boundPoints.yLeft <= square.yRight ||
-                boundPoints.yRight >= square.yLeft && boundPoints.yRight <= square.yRight))) {
+            if(intersects(square, boundPoints)) {
                 int = true;
             }
         });
@@ -254,12 +297,8 @@ export class Character {
         let [x, y] = pos;
         x = x - x % 1;
         y = y - y % 1;
-        // console.log(this.pos);
         let dir = x < 0 ? -1 : 1;
         while(x) {
-            // if(x < 1 && x > -1) {
-            //     dir = x;
-            // }
             this.pos.x += dir;
             if(this.intersecting()) {
                 this.pos.x -= dir;
@@ -270,9 +309,6 @@ export class Character {
         dir = y < 0 ? -1 : 1;
         let down = true;
         while(y) {
-            // if(y < 1 && y > -1) {
-            //     dir = y;
-            // }
             this.pos.y += dir;
             if(this.intersecting()) {
                 this.velocity.y = 0;
@@ -286,18 +322,14 @@ export class Character {
     }
 
     renderFrame(context) {
-        this.context ||= context; //remove later
         let scale = this.char.size.scale;
         context.drawImage(this.image,
-            // ...this.getDims(this.frame),
             ...this.getDims(this.getRenderFrame()),
             this.pos.x, this.pos.y, this.char.size.x * scale,
             this.char.size.y * scale);
 
-        this.showHitBox(context);
+        // this.showHitBox(context);
         this.intersecting();
-        // this.frame = (this.frame + 0.2) % 109;
-        // this.frame = (this.frame + .2) % 13;
     }
 
     renderReversed(context) {
@@ -307,20 +339,16 @@ export class Character {
         context.translate(width, 0);
         context.scale(-1, 1);
         context.drawImage(this.image,
-            // ...this.getDims(this.frame),
             ...this.getDims(this.getRenderFrame()),
             width - this.pos.x - this.char.size.x * scale,
             this.pos.y,
             this.char.size.x * scale, this.char.size.y * scale);
-        // this.frame = (this.frame + 0.2) % 109;
-        // this.frame = (this.frame + .2) % 13;
         context.restore();
-        this.showHitBox(context);
+        // this.showHitBox(context);
         this.intersecting();
     }
 
     getDims(frame) {
-        // frame = frame - frame % 1 + 96;
         frame = frame - frame % 1 + 0;
         return [
             (frame % this.char.size.rowLength)
@@ -329,10 +357,5 @@ export class Character {
             this.char.size.x, this.char.size.y
         ];
     }
-
-
-    // drawImage(image, sx, sy,
-    // sWidth, sHeight, dx, dy,
-    // dWidth, dHeight)
 
 }

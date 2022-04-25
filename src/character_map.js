@@ -33,18 +33,49 @@ const CharacterMap = {
                 end: 17,
                 priority: 3
             },
+            airJump: {
+                start: 18,
+                end: 21,
+                priority: 3
+            },
             fall: {
                 start: 22,
                 end: 23,
                 priority: 2
+            },
+            attack1: {
+                start: 44,
+                end: 46,
+                priority: 4,
+                hitbox: {
+                    xLeft: 20,
+                    xRight: 60,
+                    yLeft: 0,
+                    yRight: 60
+                }
+            },
+            attack2: {
+                start: 50,
+                end: 52,
+                priority: 5,
+                hitbox: {
+                    xLeft: 20,
+                    xRight: 60,
+                    yLeft: 0,
+                    yRight: 60
+                }
+            },
+            attack3: {
+                start: 53,
+                end: 56,
+                priority: 6,
+                hitbox: {
+                    xLeft: 20,
+                    xRight: 60,
+                    yLeft: 0,
+                    yRight: 60
+                }
             }
-            // idle: [0, 3],
-            // run: [8, 13],
-            // attack: [
-            //     [],
-            //     [],
-            //     []
-            // ]
         }
     }
 }
