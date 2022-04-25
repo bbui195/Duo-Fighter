@@ -8,6 +8,12 @@ const CharacterMap = {
             rowLength: 7,
             scale: 2
         },
+        hitBox: {
+            x: 20,
+            y: 29,
+            offsetX: 15,
+            offsetY: 5
+        },
         actions: {
             idle: {
                 start: 0,
