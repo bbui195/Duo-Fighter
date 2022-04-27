@@ -8,11 +8,14 @@ export class Character {
         this.map = map;
         this.context = context;
 
+        this.health = 100;
+        this.maxHealth = 100;
+
         this.image = new Image();
         this.image.src = this.char.image;
         this.frame = 0;
         this.frameCount = 0;
-        this.disabled = false;
+        this.disabled = 0;
         this.jumps = 2;
         this.attackDebounce = 0;
         this.pos = {
@@ -42,6 +45,7 @@ export class Character {
         } else {
             this.renderReversed(context);
         }
+        this.renderHealth(context);
     }
 
     getRenderFrame() {
@@ -74,9 +78,24 @@ export class Character {
     }
 
     updateState() {
+        //velocity
+        if(!this.standing() || this.velocity.y < 0) {
+            this.velocity.y += 0.5; //gravity
+            if(this.velocity.y < 0) {
+                this.pos.y += this.velocity.y;
+            } else {
+                this.fall();
+            }
+        } else {
+            this.velocity.y = 0;
+            this.jumps = 2;
+        }
+
         if(this.disabled) {
             return;
         }
+        
+        //inputs
         if(this.inputs.up) {
             // this.pos.y -= 5;
         }
@@ -95,17 +114,6 @@ export class Character {
             this.addAction("run", true);
         } else {
             this.removeAction("run");
-        }
-        if(!this.standing() || this.velocity.y < 0) {
-            this.velocity.y += 0.5; //gravity
-            if(this.velocity.y < 0) {
-                this.pos.y += this.velocity.y;
-            } else {
-                this.fall();
-            }
-        } else {
-            this.velocity.y = 0;
-            this.jumps = 2;
         }
     }
 
@@ -139,8 +147,13 @@ export class Character {
         this.jumps -= 1;
     }
 
-    hit() {
+    hit(damage) {
+        this.disabled += 1;
         this.velocity.y = -5;
+        setTimeout(() => {
+            this.disabled -= 1;
+        }, 500);
+        this.health = Math.max(0, this.health - damage);
         // this.jump();
     }
 
@@ -164,6 +177,7 @@ export class Character {
         }, 1000);
         let charRect = this.getBoundingRectangle();
         let attackHitbox = this.char.actions[attack].hitbox;
+        let damage = this.char.actions[attack].damage;
         let hit = null
         if(this.facingRight) {
             hit = {
@@ -181,7 +195,7 @@ export class Character {
             };
         }
         // console.log(hit);
-        this.game.attack(this, hit);
+        this.game.attack(this, hit, damage);
     }
 
     removeAction(actionName) {
@@ -321,6 +335,17 @@ export class Character {
         return down;
     }
 
+    renderHealth(context) {
+        let scale = this.char.size.scale;
+        let posX = this.pos.x + this.char.hitBox.offsetX * scale
+            - (50 - this.char.hitBox.x * scale) / 2;
+        let posY = this.pos.y - 4;
+        context.fillStyle = "red";
+        context.fillRect(posX, posY, 50, 8);
+        context.fillStyle = "green";
+        context.fillRect(posX, posY, 50 * (this.health / this.maxHealth), 8);
+    }
+
     renderFrame(context) {
         let scale = this.char.size.scale;
         context.drawImage(this.image,
@@ -329,7 +354,7 @@ export class Character {
             this.char.size.y * scale);
 
         // this.showHitBox(context);
-        this.intersecting();
+        // this.intersecting();
     }
 
     renderReversed(context) {
@@ -345,7 +370,7 @@ export class Character {
             this.char.size.x * scale, this.char.size.y * scale);
         context.restore();
         // this.showHitBox(context);
-        this.intersecting();
+        // this.intersecting();
     }
 
     getDims(frame) {

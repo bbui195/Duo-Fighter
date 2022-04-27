@@ -25,7 +25,9 @@ export class Game {
         let newChar = new Character("adventurer", this, this.map, context);
         this.characters.push(newChar);
 
-        this.player = new Player(this.character);
+        this.player = new Player(this.character, 1);
+        this.players = [this.player];
+        this.players.push(new Player(newChar, 2));
 
         this.hitboxes = {};
 
@@ -38,7 +40,7 @@ export class Game {
         this.characters.forEach((char) => {
             char.animate(context);
         });
-        this.drawHitBoxes(context);
+        // this.drawHitBoxes(context);
     }
 
     handleKey(e) {
@@ -47,7 +49,10 @@ export class Game {
         if(keyHandlers[e.key]) {
             // keyHandlers[e.key].call(this.character, e.type);
         }
-        this.player.handleKey(e.key, e.type);
+        this.players.forEach((player) => {
+            player.handleKey(e.key, e.type);
+        })
+        // this.player.handleKey(e.key, e.type);
     }
 
     drawHitBoxes(context) {
@@ -60,7 +65,7 @@ export class Game {
         context.globalAlpha = 1;
     }
 
-    attack(charHitting, hitbox) {
+    attack(charHitting, hitbox, damage) {
         console.log("attacking");
         let rand = Math.random();
         this.hitboxes[rand] = hitbox;
@@ -70,7 +75,7 @@ export class Game {
             }
             if(intersects(char.getBoundPoints(), hitbox)) {
                 console.log("hit someone");
-                char.hit();
+                char.hit(damage);
             }
         });
         setTimeout(()=> {

@@ -52,7 +52,8 @@ const CharacterMap = {
                     xRight: 60,
                     yLeft: 0,
                     yRight: 60
-                }
+                },
+                damage: 5
             },
             attack2: {
                 start: 50,
@@ -63,7 +64,8 @@ const CharacterMap = {
                     xRight: 60,
                     yLeft: 0,
                     yRight: 60
-                }
+                },
+                damage: 7
             },
             attack3: {
                 start: 53,
@@ -74,7 +76,8 @@ const CharacterMap = {
                     xRight: 60,
                     yLeft: 0,
                     yRight: 60
-                }
+                },
+                damage: 9
             }
         }
     }
