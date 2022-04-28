@@ -3,6 +3,7 @@
 
 body {
     background-color: bisque;
+    font-family: sans-serif;
 }
 
 .canvas-container {
@@ -12,6 +13,7 @@ body {
     margin: auto;
     position: relative;
     canvas {
+        // border-radius: 30px;
         background-color: cadetblue;
         position: absolute;
     }
@@ -21,7 +23,7 @@ body {
             font-size: 32px;
             text-shadow: 4px 4px black;
             text-align: center;
-            font-family: 'Press Start 2P', cursive;
+            font-family: 'Press Start 2P', sans-serif;
         }
         width: 100%;
         height: 100%;
@@ -48,3 +50,53 @@ body {
         }
     }
 }
+
+nav {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: rgb(117, 212, 236);
+    height: 40px;
+    margin-bottom: 20px;
+    h1 {
+        font-family: "Press Start 2P", sans-serif;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-left: 20px;
+        font-size: 24px;
+        color: white;
+        text-shadow: 2px 2px black;
+    }
+    img {
+        height: 25px;
+        margin-right: 10px;
+    }
+}
+
+.instructions {
+    font-family: "Press Start 2P", sans-serif;
+    margin-left: auto;
+    margin-right: auto;
+    width: 900px;
+    margin-top: 20px;
+    h2 {
+        font-size: 18px;
+        font-weight: bold;
+        
+        color :black;
+        text-shadow: 4px 4px gray;
+        margin-bottom: 10px;
+    }
+    p {
+        font-family: sans-serif;
+        font-size: 16px;
+        text-shadow: 1px 1px lightgray;
+        margin-bottom: 5px;
+        span {
+            font-weight: bold;
+        }
+    }
+}
+

@@ -16,6 +16,11 @@ document.addEventListener("DOMContentLoaded", function() {
         startDiv.style.display = "none";
         gameView.start();
     });
+
+    vsAi.addEventListener("click", function() {
+        startDiv.style.display = "none";
+        
+    });
     // start game on button press
     // gameView.start();
     // new GameView(game, context).start();
@@ -26,3 +31,4 @@ document.addEventListener("DOMContentLoaded", function() {
 // adventurer https://rvros.itch.io/animated-pixel-hero?download
 // tiles https://sanctumpixel.itch.io/forest-lite-pixel-art-tileset
 // start screen https://vnitti.itch.io/glacial-mountains-parallax-background
+// archer https://astrobob.itch.io/arcane-archer

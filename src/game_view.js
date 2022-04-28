@@ -34,6 +34,12 @@ export class GameView {
             requestAnimationFrame(this.animateStartScreen.bind(this));
         }
     }
+    animateEndScreen(name) {
+        //animate name wins! into screen
+        this.animateStartScreen();
+        
+        requestAnimationFrame(this.animateEndScreen.bind(this));
+    }
     start() {
         this.bindKeyHandlers();
         this.started = true;
@@ -47,6 +53,11 @@ export class GameView {
         // draw stuff
         // console.log("spam");
         this.game.step(this.ctx);
-        requestAnimationFrame(this.animate.bind(this));
+        //show game over and restart
+        if(this.game.gameOver) {
+            this.animateEndScreen("player 1");
+        } else {
+            requestAnimationFrame(this.animate.bind(this));
+        }
     }
 }

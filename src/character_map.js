@@ -80,6 +80,64 @@ const CharacterMap = {
                 damage: 9
             }
         }
+    },
+    archer: {
+        image: "./src/assets/archer.png",
+        projectileImage: "./src/assets/projectile.png",
+        size: {
+            x: 64,
+            y: 64,
+            rowLength: 8,
+            scale: 1.8
+        },
+        hitBox: {
+            x: 14,//20
+            y: 32,
+            offsetX: 24,//15
+            offsetY: 15
+        },
+        actions: {
+            idle: {
+                start: 40,
+                end: 43,
+                priority: 0
+                // length: 4
+            },
+            run: {
+                start: 0,
+                end: 7,
+                priority: 1
+                // length: 6
+            },
+            jump: {
+                // start: 14,
+                start: 56,
+                end: 57,
+                priority: 3
+            },
+            airJump: {
+                start: 48,
+                end: 51,
+                priority: 3
+            },
+            fall: {
+                start: 57,
+                end: 57,
+                priority: 2
+            },
+            attack1: {
+                start: 28,
+                end: 30,
+                priority: 4,
+                hitbox: {
+                    xLeft: 20,
+                    xRight: 60,
+                    yLeft: 0,
+                    yRight: 60
+                },
+                damage: 5
+            }
+        }
     }
 }
 

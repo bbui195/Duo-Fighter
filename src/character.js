@@ -2,8 +2,9 @@ import { intersects } from "./util.js";
 
 const CharacterMap = require("./character_map.js");
 export class Character {
-    constructor(charName, game, map, context) {
+    constructor(charName, game, map, context, pos) {
         this.char = CharacterMap[charName];
+        this.charName = charName;
         this.game = game;
         this.map = map;
         this.context = context;
@@ -19,8 +20,8 @@ export class Character {
         this.jumps = 2;
         this.attackDebounce = 0;
         this.pos = {
-            x: 0,
-            y: 500,
+            x: pos || 0,
+            y: 450,
         };
         this.velocity = {
             x: 0,
@@ -154,6 +155,9 @@ export class Character {
             this.disabled -= 1;
         }, 500);
         this.health = Math.max(0, this.health - damage);
+        if(this.health === 0) {
+            return true;
+        }
         // this.jump();
     }
 
@@ -167,6 +171,55 @@ export class Character {
         let attack = "attack" + (this.action + 1);
         this.addAction(attack);
         this.action = (this.action + 1) % 3;
+        if(!this.char.actions["attack" + (this.action + 1)]) { // for archer
+            this.action = 0;
+        }
+        
+        let debounceTime = 1000;
+        if(this.charName === "adventurer") {
+            let charRect = this.getBoundingRectangle();
+            let attackHitbox = this.char.actions[attack].hitbox;
+            let damage = this.char.actions[attack].damage;
+            let hit = null;
+            if(this.facingRight) {
+                hit = {
+                    xLeft: charRect.x + attackHitbox.xLeft,
+                    xRight: charRect.x + attackHitbox.xRight,
+                    yLeft: charRect.y + attackHitbox.yLeft,
+                    yRight: charRect.y + attackHitbox.yRight
+                };
+            } else {
+                hit = {
+                    xLeft: charRect.x + charRect.width - attackHitbox.xRight,
+                    xRight: charRect.x + charRect.width - attackHitbox.xLeft,
+                    yLeft: charRect.y + attackHitbox.yLeft,
+                    yRight: charRect.y + attackHitbox.yRight
+                };
+            }
+            // console.log(hit);
+            this.game.attack(this, {hitbox: hit, damage: damage});
+        } else if(this.charName === "archer") {
+            let vel;
+            if(this.inputs.down && !this.inputs.up) {
+                vel = {x: this.facingRight ? 7 : -7, y: 7};
+            } else if(this.inputs.up) {
+                vel = {x: this.facingRight ? 7 : -7, y: -7};
+            } else {
+                vel = {x: this.facingRight ? 10 : -10, y: 0};
+            }
+            console.log(this.inputs);
+            let options = {
+                image: this.char.projectileImage,
+                size: {x: 50, y: 10},
+                pos: {x: this.pos.x + this.char.size.x, y: this.pos.y + 45},
+                vel: vel,
+                owner: this,
+                damage: this.char.actions[attack].damage,
+                lifeTime: 180
+            };
+            debounceTime = 500;
+            this.game.attack(this, options);
+        }
         this.attackDebounce += 1;
         setTimeout(() => {
             this.attackDebounce -= 1;
@@ -174,28 +227,7 @@ export class Character {
                 this.action = 0;
             }
             // console.log(this.attackDebounce);
-        }, 1000);
-        let charRect = this.getBoundingRectangle();
-        let attackHitbox = this.char.actions[attack].hitbox;
-        let damage = this.char.actions[attack].damage;
-        let hit = null
-        if(this.facingRight) {
-            hit = {
-                xLeft: charRect.x + attackHitbox.xLeft,
-                xRight: charRect.x + attackHitbox.xRight,
-                yLeft: charRect.y + attackHitbox.yLeft,
-                yRight: charRect.y + attackHitbox.yRight
-            };
-        } else {
-            hit = {
-                xLeft: charRect.x + charRect.width - attackHitbox.xRight,
-                xRight: charRect.x + charRect.width - attackHitbox.xLeft,
-                yLeft: charRect.y + attackHitbox.yLeft,
-                yRight: charRect.y + attackHitbox.yRight
-            };
-        }
-        // console.log(hit);
-        this.game.attack(this, hit, damage);
+        }, debounceTime);
     }
 
     removeAction(actionName) {
@@ -235,7 +267,7 @@ export class Character {
     }
 
     showHitBox(context) {
-        context.globalAlpha = 0.7;
+        context.globalAlpha = 0.3;
         let bound = this.getBoundingRectangle();
         context.fillRect(bound.x, bound.y, bound.width, bound.height);
         context.globalAlpha = 1;
@@ -339,7 +371,7 @@ export class Character {
         let scale = this.char.size.scale;
         let posX = this.pos.x + this.char.hitBox.offsetX * scale
             - (50 - this.char.hitBox.x * scale) / 2;
-        let posY = this.pos.y - 4;
+        let posY = this.pos.y + this.char.hitBox.offsetY * scale - 12;
         context.fillStyle = "red";
         context.fillRect(posX, posY, 50, 8);
         context.fillStyle = "green";

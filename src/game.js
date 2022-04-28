@@ -2,6 +2,7 @@ import { Character } from "./character";
 import { Player } from "./player";
 import { Map } from "./map";
 import { intersects } from "./util";
+import { Projectile } from "./projectile";
 
 const keyHandlers = {
     w: function(type) {
@@ -20,9 +21,9 @@ const keyHandlers = {
 export class Game {
     constructor(context) {
         this.map = new Map();
-        this.character = new Character("adventurer", this, this.map, context);
+        this.character = new Character("archer", this, this.map, context, 40);
         this.characters = [this.character];
-        let newChar = new Character("adventurer", this, this.map, context);
+        let newChar = new Character("adventurer", this, this.map, context, 750);
         this.characters.push(newChar);
 
         this.player = new Player(this.character, 1);
@@ -30,6 +31,9 @@ export class Game {
         this.players.push(new Player(newChar, 2));
 
         this.hitboxes = {};
+        this.projectiles = [];
+
+        this.gameOver = false;
 
     }
 
@@ -40,7 +44,47 @@ export class Game {
         this.characters.forEach((char) => {
             char.animate(context);
         });
+        this.handleProjectiles(context);
+        
         // this.drawHitBoxes(context);
+    }
+
+    handleProjectiles(context) {
+        let hit = [];
+        this.projectiles.forEach((projectile, index) => {
+            //move projectile in direction
+            projectile.animate(context);
+            let bp = projectile.getBoundPoints();
+            let hitted = false;
+            this.characters.forEach((char) => {
+                if(char === projectile.owner) {
+                    return;
+                }
+                if(intersects(char.getBoundPoints(), bp)) {
+                    this.damage(char, projectile.damage);
+                    if(!hitted) {
+                        hit.push(index);
+                    }
+                    hitted = true;
+                }
+            });
+            if(projectile.lifeTime <= 0 && !hitted) {
+                hit.push(index);
+            }
+        });
+        while(hit.length > 0) {
+            this.projectiles.splice(hit.pop(), 1);
+        }
+    }
+
+    damage(char, damage) {
+        console.log("taking", damage, "damage");
+        let dead = char.hit(damage)
+        if(dead) {
+            setTimeout(() => {
+                this.gameOver = true;
+            }, 500);
+        }
     }
 
     handleKey(e) {
@@ -65,23 +109,29 @@ export class Game {
         context.globalAlpha = 1;
     }
 
-    attack(charHitting, hitbox, damage) {
-        console.log("attacking");
-        let rand = Math.random();
-        this.hitboxes[rand] = hitbox;
-        this.characters.forEach((char) => {
-            if(charHitting === char) {
-                return;
-            }
-            if(intersects(char.getBoundPoints(), hitbox)) {
-                console.log("hit someone");
-                char.hit(damage);
-            }
-        });
-        setTimeout(()=> {
-            delete this.hitboxes[rand];
-        }, 200);
-        // console.log(Object.values(this.hitboxes));
+    attack(charHitting, options) {
+        console.log(options.damage);
+        // console.log("attacking");
+        if(charHitting.charName === "adventurer") {
+            let rand = Math.random();
+            this.hitboxes[rand] = options.hitbox; // to show hitboxes
+            this.characters.forEach((char) => {
+                if(charHitting === char) {
+                    return;
+                }
+                if(intersects(char.getBoundPoints(), options.hitbox)) {
+                    console.log("hit someone");
+                    this.damage(char, options.damage);
+                }
+            });
+            setTimeout(()=> {
+                delete this.hitboxes[rand];
+            }, 200);
+            // console.log(Object.values(this.hitboxes));
+        } else if(charHitting.charName === "archer") {
+            console.log("shoot");
+            this.projectiles.push(new Projectile(options));
+        }
     }
 
     step(context) {
