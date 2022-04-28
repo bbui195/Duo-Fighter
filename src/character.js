@@ -57,7 +57,6 @@ export class Character {
             if(!action) {
                 return;
             }
-            // console.log(action);
             if(action.priority > priority) {
                 priority = action.priority;
                 frame = action.frame;
@@ -74,7 +73,6 @@ export class Character {
             }
         });
         this.frameCount = (this.frameCount + 1) % 10;
-        // console.log(frame);
         return frame;
     }
 
@@ -135,7 +133,6 @@ export class Character {
     }
 
     jump() {
-        // console.log(this.jumps);
         if(this.jumps === 0) {
             return;
         }
@@ -196,7 +193,6 @@ export class Character {
                     yRight: charRect.y + attackHitbox.yRight
                 };
             }
-            // console.log(hit);
             this.game.attack(this, {hitbox: hit, damage: damage});
         } else if(this.charName === "archer") {
             let vel;
@@ -207,7 +203,6 @@ export class Character {
             } else {
                 vel = {x: this.facingRight ? 10 : -10, y: 0};
             }
-            console.log(this.inputs);
             let options = {
                 image: this.char.projectileImage,
                 size: {x: 50, y: 10},
@@ -226,7 +221,6 @@ export class Character {
             if(this.attackDebounce === 0) {
                 this.action = 0;
             }
-            // console.log(this.attackDebounce);
         }, debounceTime);
     }
 

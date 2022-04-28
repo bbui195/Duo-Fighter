@@ -15,14 +15,13 @@ export class Player {
     }
     handleKey(key, type) {
         let input = this.keyMap[key];
-        // console.log(key, type);
+
         if(input) {
             if(this.down(key, type, this.moveMap["up"])
                 && !this.keysDown[this.moveMap["up"]]) {
                 this.character.jump();
             } else if(this.down(key, type, this.moveMap["attack"])
                 && !this.keysDown[this.moveMap["attack"]]) {
-                // console.log("hitting");
                 this.character.attack();
             }
             if(type === "keydown") {

@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const twoPlayerButton = document.getElementById("two-players");
     const vsAi = document.getElementById("vs-ai");
     let gameView = new GameView(game, context);
-    // start start screen
+
     gameView.animateStartScreen();
     twoPlayerButton.addEventListener("click", function() {
         startDiv.style.display = "none";
@@ -21,9 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
         startDiv.style.display = "none";
         
     });
-    // start game on button press
-    // gameView.start();
-    // new GameView(game, context).start();
+
 });
 
 
