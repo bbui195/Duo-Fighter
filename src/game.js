@@ -4,20 +4,6 @@ import { Map } from "./map";
 import { intersects } from "./util";
 import { Projectile } from "./projectile";
 
-const keyHandlers = {
-    w: function(type) {
-        this.pos.y -= 2;
-    },
-    a: function(type) {
-        this.pos.x -= 2;
-    },
-    s: function(type) {
-        this.pos.y += 2;
-    },
-    d: function(type) {
-        this.pos.x += 2;
-    },
-};
 export class Game {
     constructor(context) {
         this.map = new Map();
@@ -40,7 +26,7 @@ export class Game {
     draw(context) {
         context.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
         this.map.draw(context);
-        // this.character.animate(context);
+
         this.characters.forEach((char) => {
             char.animate(context);
         });
@@ -78,7 +64,6 @@ export class Game {
     }
 
     damage(char, damage) {
-        console.log("taking", damage, "damage");
         let dead = char.hit(damage)
         if(dead) {
             setTimeout(() => {
@@ -88,15 +73,9 @@ export class Game {
     }
 
     handleKey(e) {
-        // console.log(e);
-        // console.log(e.type);
-        if(keyHandlers[e.key]) {
-            // keyHandlers[e.key].call(this.character, e.type);
-        }
         this.players.forEach((player) => {
             player.handleKey(e.key, e.type);
         })
-        // this.player.handleKey(e.key, e.type);
     }
 
     drawHitBoxes(context) {
@@ -110,8 +89,7 @@ export class Game {
     }
 
     attack(charHitting, options) {
-        console.log(options.damage);
-        // console.log("attacking");
+
         if(charHitting.charName === "adventurer") {
             let rand = Math.random();
             this.hitboxes[rand] = options.hitbox; // to show hitboxes
@@ -127,9 +105,9 @@ export class Game {
             setTimeout(()=> {
                 delete this.hitboxes[rand];
             }, 200);
-            // console.log(Object.values(this.hitboxes));
+
         } else if(charHitting.charName === "archer") {
-            console.log("shoot");
+
             this.projectiles.push(new Projectile(options));
         }
     }
