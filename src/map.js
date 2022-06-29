@@ -30,28 +30,43 @@ export class Map {
     generateTerrain() {
         // 
         // this.objects.push(new MapObject());
+
+
         this.objects = [];
-        for (let row = 0; row < 19; row++) {
-            let filled = [];
-            // filled[-1] = true; //outside bounding box
-            // filled[30] = true;
-            let percent = row / 80;
-            for (let i = 0; i < 30; i++) {
-                if(Math.random() < percent) {
-                    filled.push(true);
-                } else {
-                    filled.push(false);
-                }
-            }
-            this.objects.push(filled);
-        }
+        // for (let row = 0; row < 19; row++) {
+        //     let filled = [];
+        //     // filled[-1] = true; //outside bounding box
+        //     // filled[30] = true;
+        //     let percent = row / 80;
+        //     for (let i = 0; i < 30; i++) {
+        //         if(Math.random() < percent) {
+        //             filled.push(true);
+        //         } else {
+        //             filled.push(false);
+        //         }
+        //     }
+        //     console.log(filled);
+        //     this.objects.push(filled);
+        // }
         let filled = [];
+        let emptyRow = (new Array(30)).fill(false, 0);
+        let filledRow = (new Array(30)).fill(true, 0);
+        filled = new Array(20);
+        for(let i = 0; i < 19; i++) {
+            filled[i] = [...emptyRow];
+        }
+        filled[19] = filledRow;
+        filled[16].fill(true, 4, 26);
+        filled[16].fill(false, 8, 22);
+        filled[16].fill(true, 13, 17);
+        this.objects.push(...filled);
+
         // filled[-1] = true;
         // filled[30] = true;
-        for(let i = 0; i < 30; i++) {
-            filled.push(true);
-        }
-        this.objects.push(filled);
+        // for(let i = 0; i < 30; i++) {
+        //     filled.push(true);
+        // }
+        // this.objects.push(filled);
         this.fillTerrain();
     }
     // top_left,    top,        top_right
