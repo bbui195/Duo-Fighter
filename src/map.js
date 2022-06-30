@@ -54,9 +54,9 @@ export class Map {
             filled[i] = [...emptyRow];
         }
         filled[19] = filledRow;
-        filled[16].fill(true, 4, 26);
-        filled[16].fill(false, 8, 22);
-        filled[16].fill(true, 13, 17);
+        filled[14].fill(true, 4, 26);
+        filled[14].fill(false, 8, 22);
+        filled[14].fill(true, 13, 17);
         this.objects.push(...filled);
 
         // filled[-1] = true;

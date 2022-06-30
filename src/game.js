@@ -25,7 +25,7 @@ export class Game {
 
     draw(context) {
         context.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
-        this.map.draw(context);
+        this.map.draw(context)
 
         this.characters.forEach((char) => {
             char.animate(context);
