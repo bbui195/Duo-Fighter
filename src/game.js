@@ -106,7 +106,7 @@ export class Game {
                     return;
                 }
                 if(intersects(char.getBoundPoints(), options.hitbox)) {
-                    console.log("hit someone");
+                    // console.log("hit someone");
                     this.damage(char, options.damage);
                 }
             });
