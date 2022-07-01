@@ -46,8 +46,11 @@ export class GameView {
         requestAnimationFrame(this.animate.bind(this));
     }
     bindKeyHandlers() {
-        document.addEventListener("keydown", this.game.handleKey.bind(this.game));
-        document.addEventListener("keyup", this.game.handleKey.bind(this.game));
+        if(!this.boundKeys) {
+            document.addEventListener("keydown", this.game.handleKey.bind(this.game));
+            document.addEventListener("keyup", this.game.handleKey.bind(this.game));
+            this.boundKeys = true;
+        }
     }
     animate() {
         // draw stuff
@@ -55,6 +58,8 @@ export class GameView {
         this.game.step(this.ctx);
         //show game over and restart
         if(this.game.gameOver) {
+            document.getElementsByClassName("canvas-elements")[0].style.display = "flex";
+            document.getElementsByClassName("select-prompt")[0].innerHTML = "PLAYER 1 WINS\nPlay again?";
             this.animateEndScreen("player 1");
         } else {
             requestAnimationFrame(this.animate.bind(this));

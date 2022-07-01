@@ -85,12 +85,16 @@ body {
   text-shadow: 4px 4px black;
   text-align: center;
   font-family: "Press Start 2P", sans-serif;
+  line-height: 60px;
 }
 .canvas-container .canvas-elements button {
   font-size: 28px;
   background: none;
   border: none;
   cursor: pointer;
+}
+.canvas-container .canvas-elements h1 {
+  white-space: pre;
 }
 .canvas-container .canvas-elements button:hover {
   color: transparent;
