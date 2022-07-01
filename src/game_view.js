@@ -6,6 +6,7 @@ export class GameView {
         this.game = game;
         this.gameDims = [this.game.constructor.WIDTH, this.game.constructor.HEIGHT];
         this.started = false;
+        this.boundKeys = [];
         this.initializeStart();
     }
 
@@ -37,8 +38,9 @@ export class GameView {
     animateEndScreen(name) {
         //animate name wins! into screen
         this.animateStartScreen();
-        
-        requestAnimationFrame(this.animateEndScreen.bind(this));
+        if(!this.restarted) {
+            requestAnimationFrame(this.animateEndScreen.bind(this));
+        }
     }
     start(type) {
         if(type === "ai") {
@@ -49,11 +51,14 @@ export class GameView {
         requestAnimationFrame(this.animate.bind(this));
     }
     bindKeyHandlers() {
-        if(!this.boundKeys) {
-            document.addEventListener("keydown", this.game.handleKey.bind(this.game));
-            document.addEventListener("keyup", this.game.handleKey.bind(this.game));
-            this.boundKeys = true;
+        if(this.boundKeys) {
+            document.removeEventListener("keydown", this.boundKeys);
+            document.removeEventListener("keyup", this.boundKeys);
         }
+        this.boundKeys = this.game.handleKey.bind(this.game);
+        document.addEventListener("keydown", this.boundKeys);
+        document.addEventListener("keyup", this.boundKeys);
+        
     }
     animate(time) {
         // draw stuff
@@ -62,8 +67,18 @@ export class GameView {
         //show game over and restart
         if(this.game.gameOver) {
             document.getElementsByClassName("canvas-elements")[0].style.display = "flex";
-            document.getElementsByClassName("select-prompt")[0].innerHTML = "PLAYER 1 WINS\nPlay again?";
-            this.animateEndScreen("player 1");
+            // console.log(this.game);
+            let prompt = document.getElementsByClassName("select-prompt")[0]
+            if(this.game.characters[0].health === 0) {
+                prompt.innerHTML = "PLAYER 2 WINS\nPlay again?";
+            } else {
+                prompt.innerHTML = "PLAYER 1 WINS\nPlay again?";
+            }
+            this.started = false;
+            // this.game.gameOver = false;
+            // this.restarted = false;
+            // this.animateEndScreen("player 1");
+            this.animateStartScreen();
         } else {
             requestAnimationFrame(this.animate.bind(this));
         }
