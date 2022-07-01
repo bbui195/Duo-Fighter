@@ -3,6 +3,7 @@ import { Player } from "./player";
 import { Map } from "./map";
 import { intersects } from "./util";
 import { Projectile } from "./projectile";
+import { AIPlayer } from "./ai_player";
 
 export class Game {
     constructor(context) {
@@ -23,10 +24,17 @@ export class Game {
 
     }
 
-    draw(context) {
+    setAi() {
+        this.players.pop();
+        this.ai = new AIPlayer(this.characters[1], this);
+    }
+
+    draw(context, time) {
         context.clearRect(0, 0, Game.WIDTH, Game.HEIGHT);
         this.map.draw(context)
-
+        if(this.ai) {
+            this.ai.handleAI(time);
+        }
         this.characters.forEach((char) => {
             char.animate(context);
         });
@@ -112,8 +120,8 @@ export class Game {
         }
     }
 
-    step(context) {
-        this.draw(context);
+    step(context, time) {
+        this.draw(context, time);
     }
 }
 

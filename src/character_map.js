@@ -135,7 +135,7 @@ const CharacterMap = {
                     yLeft: 0,
                     yRight: 60
                 },
-                damage: 50
+                damage: 5
             }
         }
     }

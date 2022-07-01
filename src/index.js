@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // document.getElementsByClassName("select-prompt")[0].innerHTML = "PLAYER 1 WINS\nPlay again?";
     vsAi.addEventListener("click", function() {
         startDiv.style.display = "none";
-        
+        gameView.start("ai");
     });
 
 });

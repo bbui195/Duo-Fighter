@@ -309,6 +309,12 @@ export class Character {
         return squares;
     }
 
+    outOfBounds() {
+        if(this.pos.x < -34 || this.pos.x > 824) {
+            return true;
+        }
+    }
+
     collides(squares) {
         let int = false;
         let boundPoints = this.getBoundPoints();
@@ -330,7 +336,8 @@ export class Character {
     }
 
     intersecting() {
-        return this.collides(this.getFloor().concat(this.getSides()));
+        return this.collides(this.getFloor().concat(this.getSides()))
+            || this.outOfBounds();
     }
 
     move(pos) {

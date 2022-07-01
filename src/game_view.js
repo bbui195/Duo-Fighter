@@ -40,7 +40,10 @@ export class GameView {
         
         requestAnimationFrame(this.animateEndScreen.bind(this));
     }
-    start() {
+    start(type) {
+        if(type === "ai") {
+            this.game.setAi();
+        }
         this.bindKeyHandlers();
         this.started = true;
         requestAnimationFrame(this.animate.bind(this));
@@ -52,10 +55,10 @@ export class GameView {
             this.boundKeys = true;
         }
     }
-    animate() {
+    animate(time) {
         // draw stuff
         // console.log("spam");
-        this.game.step(this.ctx);
+        this.game.step(this.ctx, time);
         //show game over and restart
         if(this.game.gameOver) {
             document.getElementsByClassName("canvas-elements")[0].style.display = "flex";
