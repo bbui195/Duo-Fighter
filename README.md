@@ -9,12 +9,11 @@ Duo Fighter is a side-scrolling fighting game where the player can battle agains
 In Duo Fighter, users can:
 * Move around platforms with a character
 * Attack other characters
-* Select the difficulty of ai to fight
+* Fight an AI chracter
 * Fight another player on the same keyboard
 
 In addition, this project includes:
-* An instructions section describing controls and rules of the game
-* A production README
+* Two different characters, one with a bow and another with a sword
 
 ## Wireframes
 
