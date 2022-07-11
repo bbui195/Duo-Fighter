@@ -1,18 +1,18 @@
-# Javascript Project
+# Duo Fighter
 
 ## Background
 
-Javascript Project is a side-scrolling fighting game where the player can battle against various difficulties of ai or another person on the same keyboard. The game features platforms to jump around and the winner is determined when one of the players health bars is empty.
+Duo Fighter is a side-scrolling fighting game where the player can battle against various difficulties of ai or another person on the same keyboard. The game features platforms to jump around and the winner is determined when one of the players health bars is empty.
 
 ## Functionality & MVPs
 
-In Javascript Project, users will be able to:
+In Duo Fighter, users can:
 * Move around platforms with a character
 * Attack other characters
 * Select the difficulty of ai to fight
 * Fight another player on the same keyboard
 
-In addition, this project will include:
+In addition, this project includes:
 * An instructions section describing controls and rules of the game
 * A production README
 
