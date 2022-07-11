@@ -1,5 +1,7 @@
 # Duo Fighter
 
+[Live Link](https://bbui195.github.io/Duo-Fighter/)
+
 ## Background
 
 Duo Fighter is a side-scrolling fighting game where the player can battle against various difficulties of ai or another person on the same keyboard. The game features platforms to jump around and the winner is determined when one of the players health bars is empty.
@@ -19,20 +21,14 @@ In addition, this project includes:
 
 * Nav links include links to this project's Github repo and my LinkedIn
 
-* Instructions and rules list all of the keybinds to play the game.
+* Instructions list all of the keybinds to play the game.
 
 ## Technologies, Libraries, and APIs
 
-This project will be implemented with the following technologies:
+This project is implemented with the following technologies:
+* `Javascript` to handle the game logic
+* `HTML`, and `CSS` to show and style the game page
 * The `Canvas API` to render the game board
 * `Webpack` and `Babel` to bundle and transpiile the source Javascript code
 * `npm` to manage project dependencies
 
-## Implementation Timeline
-
-* **Thursday:** Setup project and get webpack working. Experiment with canvas api to render sprite sheets.
-* **Friday Afternoon & Weekend:** Create `Game`, `GameView`, `Character`, `Player`, `Map`, and `Obstacle` classes. Have a map render with a character able to walk around and jump on obstacles and platforms.
-* **Monday:** Implement attacking logic and hit boxes for attacks. Make animation priorities to ensure action animations have precedence over idle and walking animations.
-* **Tuesday:** Create a start screen that allows picking between 2 players or 1 player vs ai. Create basic ai to control another character. Allow multiple characters to be played on the same keyboard.
-* **Wednesday:** Style the page to include instructions on how to play the game, add a nav bar with link to github.
-* **Thursday:** Deploy to GitHub pages and rewrite this proposal as a production README.
