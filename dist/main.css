@@ -124,6 +124,10 @@ nav img {
   height: 25px;
   margin-right: 10px;
 }
+nav .links {
+  display: flex;
+  flex-direction: row;
+}
 
 .instructions {
   font-family: "Press Start 2P", sans-serif;

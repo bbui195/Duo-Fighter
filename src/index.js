@@ -27,6 +27,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 
+const ignoreKeys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+
+window.addEventListener("keydown", function(e) {
+    if(ignoreKeys.indexOf(e.code) != -1) {
+        e.preventDefault();
+    }
+}, false);
+
 
 // smoke https://nyknck.itch.io/pixelfx052
 // adventurer https://rvros.itch.io/animated-pixel-hero?download

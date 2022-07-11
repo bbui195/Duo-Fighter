@@ -15,13 +15,11 @@ In Duo Fighter, users can:
 In addition, this project includes:
 * Two different characters, one with a bow and another with a sword
 
-## Wireframes
-
-![wireframe](/src/assets/wireframe.png "Wireframe")
+![screenshot](/src/assets/screenshot.png "Screenshot")
 
 * Nav links include links to this project's Github repo and my LinkedIn
 
-* Instructions and rules will list all of the keys and have rules for the game.
+* Instructions and rules list all of the keybinds to play the game.
 
 ## Technologies, Libraries, and APIs
 

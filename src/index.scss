@@ -74,6 +74,10 @@ nav {
         height: 25px;
         margin-right: 10px;
     }
+    .links {
+        display: flex;
+        flex-direction: row;
+    }
 }
 
 .instructions {
